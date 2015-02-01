@@ -10,11 +10,10 @@ int main(int argc, char *argv[])
     KEInternetExplorer browser(true);
 
     QNetworkRequest request;
-    request.setRawHeader("Content", "pomme de terre");
-    request.setHeader(QNetworkRequest::ContentLengthHeader, 10);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setUrl(QUrl("http://blog.xavier-monin.net"));
 
-    browser.get(request);
+    browser.post(request, QByteArray("element=truc&chose=prout"));
 
     return a.exec();
 }

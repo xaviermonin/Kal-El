@@ -3,6 +3,7 @@
 #include <QNetworkRequest>
 #include <Windows.h>
 #include <QDebug>
+#include <QHttpMultiPart>
 
 typedef enum BrowserNavConstants {
     navOpenInNewWindow = 0x1,
@@ -76,6 +77,13 @@ bool KEInternetExplorer::silence() const
 
 void KEInternetExplorer::get(const QNetworkRequest& request)
 {
+    QString header = headerFromNetworkRequest(request);
+
+    navigate(request.url().toString(), header);
+}
+
+QString KEInternetExplorer::headerFromNetworkRequest(const QNetworkRequest& request) const
+{
     QList<QByteArray> headers = request.rawHeaderList();
     QString strHeader;
 
@@ -87,18 +95,18 @@ void KEInternetExplorer::get(const QNetworkRequest& request)
         strHeader.append("\r\n");
     }
 
-    qDebug() << "Headers: " << strHeader;
-
-    navigate(request.url().toString(), strHeader);
+    return strHeader;
 }
 
-void KEInternetExplorer::post(const QString& url)
+void KEInternetExplorer::post(const QNetworkRequest &request, QByteArray postData)
 {
-    //navigate(url, QVariant(), QVariant(), );
+    QString header = headerFromNetworkRequest(request);
+
+    navigate(request.url().toString(), header, postData);
 }
 
 void KEInternetExplorer::navigate(const QString& url, const QString& headers,
-                                  const QString& postData,
+                                  const QByteArray& postData,
                                   const QString& targetFrameName, int flags)
 {
     if (!ie)
@@ -106,13 +114,4 @@ void KEInternetExplorer::navigate(const QString& url, const QString& headers,
 
     ie->dynamicCall("Navigate2(QVariant, QVariant, QVariant, QVariant, QVariant)",
                     url, flags, targetFrameName, postData, headers);
-    /*ie->dynamicCall("Navigate2(QVariant, QVariant, QVariant, QVariant, QVariant)",
-                    "http://echo.fr", 0, "", "pomme=truc", "Content: pomme");*/
 }
-
-
-
-
-
-
-
