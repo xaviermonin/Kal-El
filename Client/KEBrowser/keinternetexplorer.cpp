@@ -118,12 +118,38 @@ void KEInternetExplorer::navigate(const QString& url, const QString& headers,
                     url, flags, targetFrameName, postData, headers);
 }
 
-void KEInternetExplorer::DocumentCompleteInternal(IDispatch* disp, QVariant &url)
+void KEInternetExplorer::documentCompleteInternal(IDispatch* disp, QVariant &url)
 {
-    emit DocumentComplete(disp, url);
+    emit documentComplete(disp, url);
+}
+
+void KEInternetExplorer::navigateCompleteInternal(QString url)
+{
+    emit navigateComplete(url);
+}
+
+void KEInternetExplorer::beforeNavigateInternal(QString url, int flag, QString targetFrameName,
+                                                QVariant& postData, QString header, bool& cancel)
+{
+    emit beforeNavigate(url, flag, targetFrameName, postData, header, cancel);
+}
+
+void KEInternetExplorer::downloadBeginInternal()
+{
+    emit downloadBegin();
+}
+
+void KEInternetExplorer::downloadCompleteInternal()
+{
+    emit downloadComplete();
 }
 
 void KEInternetExplorer::setConnections()
 {
-    connect(ie, SIGNAL(DocumentCompleteInternal(IDispatch*, QVariant&)), this, SLOT(DocumentCompleteInternal(IDispatch*,QVariant&)));
+    connect(ie, SIGNAL(DocumentComplete(IDispatch*, QVariant&)), this, SLOT(documentCompleteInternal(IDispatch*,QVariant&)));
+    connect(ie, SIGNAL(NavigateComplete(QString)), this, SLOT(navigateCompleteInternal(QString)));
+    connect(ie, SIGNAL(BeforeNavigate(QString, int, QString, QVariant&, QString, bool&)),
+            this, SLOT(beforeNavigateInternal(QString,int,QString,QVariant&,QString,bool&)));
+    connect(ie, SIGNAL(DownloadBegin()), this, SLOT(downloadBeginInternal()));
+    connect(ie, SIGNAL(DownloadComplete()), this, SLOT(downloadCompleteInternal()));
 }

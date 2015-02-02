@@ -1,7 +1,7 @@
 #include <QCoreApplication>
 #include "../KEBrowser/keinternetexplorer.h"
 #include <QThread>
-#include <QNetworkRequest>
+#include "kenetworkreply.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     request.setUrl(QUrl("http://blog.xavier-monin.net"));
 
-    browser.post(request, QByteArray("element=truc&chose=prout"));
+    browser.post(request, QByteArray("element=truc&chose=machin"));
 
     return a.exec();
 }

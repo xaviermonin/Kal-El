@@ -30,10 +30,18 @@ public:
     void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
 
 signals:
-    void DocumentComplete(IDispatch*, QVariant& url);
+    void documentComplete(IDispatch*, QVariant& url);
+    void navigateComplete(QString url);
+    void beforeNavigate(QString, int, QString, QVariant&, QString, bool&);
+    void downloadBegin();
+    void downloadComplete();
 
-protected slots:
-    virtual void DocumentCompleteInternal(IDispatch*, QVariant& url);
+private slots:
+    void documentCompleteInternal(IDispatch*, QVariant& url);
+    void navigateCompleteInternal(QString url);
+    void beforeNavigateInternal(QString url, int flag, QString targetFrameName, QVariant&postData, QString header, bool&cancel);
+    void downloadBeginInternal();
+    void downloadCompleteInternal();
 
 private:
     void setConnections();

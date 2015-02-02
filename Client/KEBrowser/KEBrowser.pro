@@ -12,10 +12,14 @@ TEMPLATE = lib
 CONFIG += staticlib axcontainer
 
 SOURCES += \
-    keinternetexplorer.cpp
+    keinternetexplorer.cpp \
+    kenetworkreply.cpp \
+    kenetworkaccessmanager.cpp
 
 HEADERS += \
-    keinternetexplorer.h
+    keinternetexplorer.h \
+    kenetworkreply.h \
+    kenetworkaccessmanager.h
 unix {
     target.path = /usr/lib
     INSTALLS += target
