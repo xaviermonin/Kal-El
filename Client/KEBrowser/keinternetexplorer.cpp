@@ -39,6 +39,8 @@ KEInternetExplorer::KEInternetExplorer(bool visible = false, QObject *parent)
     }
 
     setVisible(visible);
+
+    setConnections();
 }
 
 void KEInternetExplorer::close()
@@ -114,4 +116,14 @@ void KEInternetExplorer::navigate(const QString& url, const QString& headers,
 
     ie->dynamicCall("Navigate2(QVariant, QVariant, QVariant, QVariant, QVariant)",
                     url, flags, targetFrameName, postData, headers);
+}
+
+void KEInternetExplorer::DocumentCompleteInternal(IDispatch* disp, QVariant &url)
+{
+    emit DocumentComplete(disp, url);
+}
+
+void KEInternetExplorer::setConnections()
+{
+    connect(ie, SIGNAL(DocumentCompleteInternal(IDispatch*, QVariant&)), this, SLOT(DocumentCompleteInternal(IDispatch*,QVariant&)));
 }

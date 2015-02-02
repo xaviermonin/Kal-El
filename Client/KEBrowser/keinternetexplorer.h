@@ -7,6 +7,7 @@
 class QAxObject;
 class QNetworkRequest;
 class QVariant;
+struct IDispatch;
 
 class KEInternetExplorer : public QObject
 {
@@ -20,15 +21,22 @@ public:
 
     void close();
 
-private:
-    void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
-
     void setSilence(bool);
     bool silence() const;
 
     void setVisible(bool);
     bool visible() const;
 
+    void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
+
+signals:
+    void DocumentComplete(IDispatch*, QVariant& url);
+
+protected slots:
+    virtual void DocumentCompleteInternal(IDispatch*, QVariant& url);
+
+private:
+    void setConnections();
     QString headerFromNetworkRequest(const QNetworkRequest&) const;
 
 private:
