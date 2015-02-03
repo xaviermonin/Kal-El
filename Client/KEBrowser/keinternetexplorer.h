@@ -49,6 +49,8 @@ public:
 
     void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
 
+    void stop();
+
 signals:
     void documentComplete(IDispatch*, QVariant& url);
     void navigateComplete(QString url);

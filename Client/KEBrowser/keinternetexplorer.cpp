@@ -112,10 +112,18 @@ void KEInternetExplorer::navigate(const QString& url, const QString& headers,
                                   const QString& targetFrameName, int flags)
 {
     if (!ie)
+    {
+        qWarning("IE closed");
         return;
+    }
 
     ie->dynamicCall("Navigate2(QVariant, QVariant, QVariant, QVariant, QVariant)",
                     url, flags, targetFrameName, postData, headers);
+}
+
+void KEInternetExplorer::stop()
+{
+    ie->dynamicCall("Stop()");
 }
 
 void KEInternetExplorer::documentCompleteInternal(IDispatch* disp, QVariant &url)
