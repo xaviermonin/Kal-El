@@ -14,12 +14,14 @@ CONFIG += staticlib axcontainer
 SOURCES += \
     keinternetexplorer.cpp \
     kenetworkreply.cpp \
-    kenetworkaccessmanager.cpp
+    kenetworkaccessmanager.cpp \
+    kehtmldocument.cpp
 
 HEADERS += \
     keinternetexplorer.h \
     kenetworkreply.h \
-    kenetworkaccessmanager.h
+    kenetworkaccessmanager.h \
+    kehtmldocument.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

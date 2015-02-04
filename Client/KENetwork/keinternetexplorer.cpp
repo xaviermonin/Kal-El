@@ -52,34 +52,10 @@ bool KEInternetExplorer::visible() const
     return ie->property("Visible").toBool();
 }
 
-QString KEInternetExplorer::content()
+KEHtmlDocument* KEInternetExplorer::HtmlDocument()
 {
-    QAxObject *document = ie->querySubObject("Document");
-    if (!document)
-    {
-        qWarning("Document null");
-        return QString();
-    }
-
-    QAxObject *body = document->querySubObject("body");
-    if (body == NULL)
-    {
-        qWarning("body null");
-        delete document;
-        return QString();
-    }
-
-    QVariant outerHTML = body->property("outerHTML");
-    if (outerHTML == NULL)
-    {
-        qWarning("outerHTML null");
-        delete document;
-        return QString();
-    }
-
-    delete document;
-
-    return outerHTML.toString();
+    KEHtmlDocument* htmlDoc = new KEHtmlDocument(this->ie, this);
+    return htmlDoc;
 }
 
 bool KEInternetExplorer::silence() const

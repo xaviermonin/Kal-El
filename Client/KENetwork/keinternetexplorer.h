@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include "kehtmldocument.h"
 
 class QAxObject;
 class QNetworkRequest;
@@ -44,7 +45,7 @@ public:
     void setVisible(bool);
     bool visible() const;
 
-    QString content();
+    KEHtmlDocument* HtmlDocument();
 
     void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
 

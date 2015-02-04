@@ -41,14 +41,13 @@ void KEInternetExplorerTest::get()
 {
     QSignalSpy spy(ie, SIGNAL(documentComplete(IDispatch*,QVariant&)));
 
-    ie->content();
-
     ie->navigate("http://www.perdu.com/");
 
     while (spy.count() == 0)
         QTest::qWait(20);
 
-    QString content = ie->content();
+    KEHtmlDocument* doc = ie->HtmlDocument();
+    QString content = doc->bodyHtml();
     QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
 }
 
