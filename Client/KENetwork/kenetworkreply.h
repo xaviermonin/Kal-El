@@ -23,6 +23,9 @@ protected slots:
     void setContent();
 
 private:
+    QString headerFromNetworkRequest(const QNetworkRequest&) const;
+
+private:
     KEInternetExplorer* ie;
 
     QByteArray content;

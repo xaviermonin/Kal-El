@@ -36,9 +36,6 @@ public:
     explicit KEInternetExplorer(bool visible, QObject* parent = 0);
     virtual ~KEInternetExplorer();
 
-    void get(const QNetworkRequest& request);
-    void post(const QNetworkRequest& request, QByteArray postData);
-
     void close();
 
     void setSilence(bool);
@@ -46,6 +43,8 @@ public:
 
     void setVisible(bool);
     bool visible() const;
+
+    QString content();
 
     void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
 
@@ -64,10 +63,10 @@ private slots:
     void beforeNavigateInternal(QString url, int flag, QString targetFrameName, QVariant&postData, QString header, bool&cancel);
     void downloadBeginInternal();
     void downloadCompleteInternal();
+    void exceptionInternal(int,QString,QString,QString);
 
 private:
     void setConnections();
-    QString headerFromNetworkRequest(const QNetworkRequest&) const;
 
 private:
     QAxObject* ie;

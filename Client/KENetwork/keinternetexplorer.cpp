@@ -52,39 +52,39 @@ bool KEInternetExplorer::visible() const
     return ie->property("Visible").toBool();
 }
 
+QString KEInternetExplorer::content()
+{
+    QAxObject *document = ie->querySubObject("Document");
+    if (!document)
+    {
+        qWarning("Document null");
+        return QString();
+    }
+
+    QAxObject *body = document->querySubObject("body");
+    if (body == NULL)
+    {
+        qWarning("body null");
+        delete document;
+        return QString();
+    }
+
+    QVariant outerHTML = body->property("outerHTML");
+    if (outerHTML == NULL)
+    {
+        qWarning("outerHTML null");
+        delete document;
+        return QString();
+    }
+
+    delete document;
+
+    return outerHTML.toString();
+}
+
 bool KEInternetExplorer::silence() const
 {
     return ie->property("Silence").toBool();
-}
-
-void KEInternetExplorer::get(const QNetworkRequest& request)
-{
-    QString header = headerFromNetworkRequest(request);
-
-    navigate(request.url().toString(), header);
-}
-
-QString KEInternetExplorer::headerFromNetworkRequest(const QNetworkRequest& request) const
-{
-    QList<QByteArray> headers = request.rawHeaderList();
-    QString strHeader;
-
-    for (QList<QByteArray>::iterator it = headers.begin(); it != headers.end(); ++it)
-    {
-        strHeader.append(*it);
-        strHeader.append(": ");
-        strHeader.append(request.rawHeader(*it));
-        strHeader.append("\r\n");
-    }
-
-    return strHeader;
-}
-
-void KEInternetExplorer::post(const QNetworkRequest &request, QByteArray postData)
-{
-    QString header = headerFromNetworkRequest(request);
-
-    navigate(request.url().toString(), header, postData);
 }
 
 void KEInternetExplorer::navigate(const QString& url, const QString& headers,
@@ -132,6 +132,11 @@ void KEInternetExplorer::downloadCompleteInternal()
     emit downloadComplete();
 }
 
+void KEInternetExplorer::exceptionInternal(int, QString, QString, QString)
+{
+
+}
+
 void KEInternetExplorer::setConnections()
 {
     connect(ie, SIGNAL(DocumentComplete(IDispatch*, QVariant&)), this, SLOT(documentCompleteInternal(IDispatch*,QVariant&)));
@@ -140,4 +145,6 @@ void KEInternetExplorer::setConnections()
             this, SLOT(beforeNavigateInternal(QString,int,QString,QVariant&,QString,bool&)));
     connect(ie, SIGNAL(DownloadBegin()), this, SLOT(downloadBeginInternal()));
     connect(ie, SIGNAL(DownloadComplete()), this, SLOT(downloadCompleteInternal()));
+    connect(ie, SIGNAL(exception(int, QString, QString, QString)),
+            this, SLOT(exceptionInternal(int,QString,QString,QString)));
 }

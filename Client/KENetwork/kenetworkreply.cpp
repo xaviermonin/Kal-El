@@ -24,6 +24,22 @@ bool KENetworkReply::isSequential() const
     return true;
 }
 
+QString KENetworkReply::headerFromNetworkRequest(const QNetworkRequest& request) const
+{
+    QList<QByteArray> headers = request.rawHeaderList();
+    QString strHeader;
+
+    for (QList<QByteArray>::iterator it = headers.begin(); it != headers.end(); ++it)
+    {
+        strHeader.append(*it);
+        strHeader.append(": ");
+        strHeader.append(request.rawHeader(*it));
+        strHeader.append("\r\n");
+    }
+
+    return strHeader;
+}
+
 void KENetworkReply::abort()
 {
     ie->stop();

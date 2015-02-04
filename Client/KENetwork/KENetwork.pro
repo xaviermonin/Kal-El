@@ -7,7 +7,7 @@
 QT       -= gui
 QT       += axcontainer network
 
-TARGET = KEBrowser
+TARGET = KENetwork
 TEMPLATE = lib
 CONFIG += staticlib axcontainer
 

@@ -13,8 +13,10 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
-    void get_data();
     void get();
+
+private:
+    KEInternetExplorer* ie = NULL;
 };
 
 KEInternetExplorerTest::KEInternetExplorerTest()
@@ -23,22 +25,31 @@ KEInternetExplorerTest::KEInternetExplorerTest()
 
 void KEInternetExplorerTest::initTestCase()
 {
+    ie = new KEInternetExplorer(false);
 }
 
 void KEInternetExplorerTest::cleanupTestCase()
 {
-}
-
-void KEInternetExplorerTest::get_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::newRow("0") << QString();
+    if (ie != NULL)
+    {
+        delete ie;
+        ie = NULL;
+    }
 }
 
 void KEInternetExplorerTest::get()
 {
-    QFETCH(QString, data);
-    QVERIFY2(true, "Failure");
+    QSignalSpy spy(ie, SIGNAL(documentComplete(IDispatch*,QVariant&)));
+
+    ie->content();
+
+    ie->navigate("http://www.perdu.com/");
+
+    while (spy.count() == 0)
+        QTest::qWait(20);
+
+    QString content = ie->content();
+    QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
 }
 
 QTEST_MAIN(KEInternetExplorerTest)
