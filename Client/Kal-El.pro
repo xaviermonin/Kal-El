@@ -1,7 +1,6 @@
 TEMPLATE = subdirs
 
-SUBDIRS += \
-    KEBrowser \
-    KEBrowserTest
+SUBDIRS += KENetwork \
+           Tests
 
-KEBrowserTest.depends = KEBrowser
+Test.depends = KENetwork

@@ -5,26 +5,6 @@
 #include <QDebug>
 #include <QHttpMultiPart>
 
-typedef enum BrowserNavConstants {
-    navOpenInNewWindow = 0x1,
-    navNoHistory = 0x2,
-    navNoReadFromCache = 0x4,
-    navNoWriteToCache = 0x8,
-    navAllowAutosearch = 0x10,
-    navBrowserBar = 0x20,
-    navHyperlink = 0x40,
-    navEnforceRestricted = 0x80,
-    navNewWindowsManaged = 0x0100,
-    navUntrustedForDownload = 0x0200,
-    navTrustedForActiveX = 0x0400,
-    navOpenInNewTab = 0x0800,
-    navOpenInBackgroundTab = 0x1000,
-    navKeepWordWheelText = 0x2000,
-    navVirtualTab = 0x4000,
-    navBlockRedirectsXDomain = 0x8000,
-    navOpenNewForegroundTab = 0x10000
-} BrowserNavConstants;
-
 KEInternetExplorer::KEInternetExplorer(bool visible = false, QObject *parent)
     : QObject(parent)
 {
