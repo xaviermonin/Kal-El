@@ -16,7 +16,7 @@ private Q_SLOTS:
     void get();
 
 private:
-    KEInternetExplorer* ie = NULL;
+    KEInternetExplorer* ie;
 };
 
 KEInternetExplorerTest::KEInternetExplorerTest()
@@ -39,15 +39,14 @@ void KEInternetExplorerTest::cleanupTestCase()
 
 void KEInternetExplorerTest::get()
 {
-    QSignalSpy spy(ie, SIGNAL(documentComplete(IDispatch*,QVariant&)));
+    QSignalSpy spy(ie, SIGNAL(navigateComplete(QString)));
 
     ie->navigate("http://www.perdu.com/");
 
     while (spy.count() == 0)
-        QTest::qWait(20);
+        QTest::qWait(100);
 
-    KEHtmlDocument* doc = ie->HtmlDocument();
-    QString content = doc->bodyHtml();
+    QString content = ie->contentHtml();
     QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
 }
 

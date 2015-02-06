@@ -52,10 +52,38 @@ bool KEInternetExplorer::visible() const
     return ie->property("Visible").toBool();
 }
 
-KEHtmlDocument* KEInternetExplorer::HtmlDocument()
+QString KEInternetExplorer::contentHtml()
 {
-    KEHtmlDocument* htmlDoc = new KEHtmlDocument(this->ie, this);
-    return htmlDoc;
+    QAxObject* axDocumentElement = documentElement();
+    if (axDocumentElement == NULL)
+        return QString::null;
+
+    QVariant outerHTML = axDocumentElement->property("outerHTML");
+
+    if (!outerHTML.isValid())
+    {
+        qDebug("outerHTML node invalid");
+        return QString::null;
+    }
+
+    return outerHTML.toString();
+}
+
+QString KEInternetExplorer::contentText()
+{
+    QAxObject* axDocumentElement = documentElement();
+    if (axDocumentElement == NULL)
+        return QString::null;
+
+    QVariant outerHTML = axDocumentElement->property("outerText");
+
+    if (!outerHTML.isValid())
+    {
+        qDebug("outerText node invalid");
+        return QString::null;
+    }
+
+    return outerHTML.toString();
 }
 
 bool KEInternetExplorer::silence() const
@@ -123,4 +151,23 @@ void KEInternetExplorer::setConnections()
     connect(ie, SIGNAL(DownloadComplete()), this, SLOT(downloadCompleteInternal()));
     connect(ie, SIGNAL(exception(int, QString, QString, QString)),
             this, SLOT(exceptionInternal(int,QString,QString,QString)));
+}
+
+QAxObject *KEInternetExplorer::documentElement()
+{
+    QAxObject* document = ie->querySubObject("Document");
+    if (document == NULL || document->isNull())
+    {
+        qDebug("Document node null");
+        return NULL;
+    }
+
+    QAxObject* documentElement = document->querySubObject("documentElement");
+    if (!documentElement || documentElement->isNull())
+    {
+        qWarning("DocumentElement node null");
+        return NULL;
+    }
+
+    return documentElement;
 }
