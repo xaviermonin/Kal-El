@@ -54,36 +54,12 @@ bool KEInternetExplorer::visible() const
 
 QString KEInternetExplorer::contentHtml()
 {
-    QAxObject* axDocumentElement = documentElement();
-    if (axDocumentElement == NULL)
-        return QString::null;
-
-    QVariant outerHTML = axDocumentElement->property("outerHTML");
-
-    if (!outerHTML.isValid())
-    {
-        qDebug("outerHTML node invalid");
-        return QString::null;
-    }
-
-    return outerHTML.toString();
+    return getDocumentElementProperty("outerHTML");
 }
 
 QString KEInternetExplorer::contentText()
 {
-    QAxObject* axDocumentElement = documentElement();
-    if (axDocumentElement == NULL)
-        return QString::null;
-
-    QVariant outerHTML = axDocumentElement->property("outerText");
-
-    if (!outerHTML.isValid())
-    {
-        qDebug("outerText node invalid");
-        return QString::null;
-    }
-
-    return outerHTML.toString();
+    return getDocumentElementProperty("outerText");
 }
 
 bool KEInternetExplorer::silence() const
@@ -170,4 +146,23 @@ QAxObject *KEInternetExplorer::documentElement()
     }
 
     return documentElement;
+}
+
+QString KEInternetExplorer::getDocumentElementProperty(QString name)
+{
+    QAxObject* axDocumentElement = documentElement();
+    if (axDocumentElement == NULL)
+        return QString::null;
+
+    QVariant propertyValue = axDocumentElement->property(name.toLatin1().constData());
+
+    delete axDocumentElement;
+
+    if (!propertyValue.isValid())
+    {
+        qDebug("document element property invalid");
+        return QString::null;
+    }
+
+    return propertyValue.toString();
 }

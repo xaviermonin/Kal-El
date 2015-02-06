@@ -69,6 +69,7 @@ private slots:
 private:
     void setConnections();
     QAxObject* documentElement();
+    QString getDocumentElementProperty(QString name);
 
 private:
     QAxObject* ie;

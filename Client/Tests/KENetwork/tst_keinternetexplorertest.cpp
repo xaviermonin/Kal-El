@@ -46,8 +46,11 @@ void KEInternetExplorerTest::get()
     while (spy.count() == 0)
         QTest::qWait(100);
 
-    QString content = ie->contentHtml();
-    QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
+    QString contentHtml = ie->contentHtml();
+    QString contentText = ie->contentText();
+
+    QVERIFY(contentHtml.contains("<title>Vous Etes Perdu ?</title>"));
+    QVERIFY(contentText.contains("Perdu sur l'Internet ?\r\n"));
 }
 
 QTEST_MAIN(KEInternetExplorerTest)
