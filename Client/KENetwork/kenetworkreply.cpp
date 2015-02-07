@@ -1,21 +1,27 @@
 #include "kenetworkreply.h"
 #include "keinternetexplorer.h"
 
-KENetworkReply::KENetworkReply(const QNetworkRequest& request, QObject *parent)
+KENetworkReply::KENetworkReply(const QNetworkRequest& request, QIODevice* device, QObject *parent)
     : QNetworkReply(parent)
 {
     setRequest(request);
 
     ie = new KEInternetExplorer(false, this);
 
-    connect(ie, SIGNAL(documentComplete(IDispatch*,QVariant&)), this, SLOT(setContent()));
+    connect(ie, SIGNAL(navigateComplete(QString)), this, SLOT(setContent()));
 
-    ie->navigate(request.url().toString());
+    QByteArray postData;
+    QString headers = headersFromNetworkRequest(request);
+
+    if (device != NULL)
+        postData = device->readAll();
+
+    ie->navigate(request.url().toString(), headers, postData);
 }
 
 KENetworkReply::~KENetworkReply()
 {
-    if (!ie)
+    if (ie != NULL)
         ie->close();
 }
 
@@ -24,7 +30,7 @@ bool KENetworkReply::isSequential() const
     return true;
 }
 
-QString KENetworkReply::headerFromNetworkRequest(const QNetworkRequest& request) const
+QString KENetworkReply::headersFromNetworkRequest(const QNetworkRequest& request) const
 {
     QList<QByteArray> headers = request.rawHeaderList();
     QString strHeader;
@@ -71,7 +77,7 @@ void KENetworkReply::setContent()
 {
     qWarning("Document complete. Read content.");
 
-    this->content = "This is my content";
+    this->content = ie->contentText().toLatin1();
 
     // setHeader(QNetworkRequest::ContentTypeHeader, QVariant("text/html; charset=UTF-8"));
     setHeader(QNetworkRequest::ContentLengthHeader, QVariant(this->content.size()));

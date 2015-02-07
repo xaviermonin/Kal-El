@@ -9,7 +9,7 @@ class KENetworkReply : public QNetworkReply
 {
     Q_OBJECT
 public:
-    KENetworkReply(const QNetworkRequest &request, QObject* parent = 0);
+    KENetworkReply(const QNetworkRequest &request, QIODevice *device = NULL, QObject* parent = 0);
     ~KENetworkReply();
 
     virtual bool isSequential() const;
@@ -23,7 +23,7 @@ protected slots:
     void setContent();
 
 private:
-    QString headerFromNetworkRequest(const QNetworkRequest&) const;
+    QString headersFromNetworkRequest(const QNetworkRequest&) const;
 
 private:
     KEInternetExplorer* ie;
