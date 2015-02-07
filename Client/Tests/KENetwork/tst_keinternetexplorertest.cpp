@@ -14,9 +14,10 @@ private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
     void get();
+    void post();
 
 private:
-    KEInternetExplorer* ie;
+
 };
 
 KEInternetExplorerTest::KEInternetExplorerTest()
@@ -25,32 +26,47 @@ KEInternetExplorerTest::KEInternetExplorerTest()
 
 void KEInternetExplorerTest::initTestCase()
 {
-    ie = new KEInternetExplorer(false);
+
 }
 
 void KEInternetExplorerTest::cleanupTestCase()
 {
-    if (ie != NULL)
-    {
-        delete ie;
-        ie = NULL;
-    }
 }
 
 void KEInternetExplorerTest::get()
 {
-    QSignalSpy spy(ie, SIGNAL(navigateComplete(QString)));
+    KEInternetExplorer ie(false);
 
-    ie->navigate("http://www.perdu.com/");
+    QSignalSpy spy(&ie, SIGNAL(navigateComplete(QString)));
+
+    ie.navigate("http://www.perdu.com/");
 
     while (spy.count() == 0)
         QTest::qWait(100);
 
-    QString contentHtml = ie->contentHtml();
-    QString contentText = ie->contentText();
+    QString contentHtml = ie.contentHtml();
+    QString contentText = ie.contentText();
 
     QVERIFY(contentHtml.contains("<title>Vous Etes Perdu ?</title>"));
     QVERIFY(contentText.contains("Perdu sur l'Internet ?\r\n"));
+}
+
+void KEInternetExplorerTest::post()
+{
+    KEInternetExplorer ie(false);
+
+    QSignalSpy spy(&ie, SIGNAL(navigateComplete(QString)));
+
+    ie.navigate("http://www.htmlcodetutorial.com/cgi-bin/mycgi.pl",
+                 "Content-Type: application/x-www-form-urlencoded",
+                 "kepropertyname=kepropertyvalue");
+
+    while (spy.count() == 0)
+        QTest::qWait(100);
+
+    QString contentText = ie.contentText();
+
+    QVERIFY(contentText.contains("kepropertyname"));
 }
 
 QTEST_MAIN(KEInternetExplorerTest)
