@@ -15,7 +15,10 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += tst_keinternetexplorertest.cpp
+SOURCES += \
+    main.cpp \
+    tst_keinternetexplorertest.cpp \
+    tst_kenetworkreplytest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../../KENetwork/release/ -lKENetwork
@@ -28,3 +31,5 @@ win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../KENe
 else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../KENetwork/debug/libKENetwork.a
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../KENetwork/release/KENetwork.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../../KENetwork/debug/KENetwork.lib
+
+HEADERS +=
