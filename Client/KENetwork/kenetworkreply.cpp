@@ -2,7 +2,7 @@
 #include "keinternetexplorer.h"
 
 KENetworkReply::KENetworkReply(const QNetworkRequest& request, QIODevice* device, QObject *parent)
-    : QNetworkReply(parent)
+    : QNetworkReply(parent), offset(0)
 {
     setRequest(request);
 
@@ -14,7 +14,12 @@ KENetworkReply::KENetworkReply(const QNetworkRequest& request, QIODevice* device
     QString headers = headersFromNetworkRequest(request);
 
     if (device != NULL)
+    {
+        if (!device->isOpen())
+            device->open(QIODevice::ReadOnly);
+
         postData = device->readAll();
+    }
 
     ie->navigate(request.url().toString(), headers, postData);
 }
@@ -75,15 +80,16 @@ qint64 KENetworkReply::readData(char *data, qint64 maxSize)
 
 void KENetworkReply::setContent()
 {
-    qWarning("Document complete. Read content.");
-
     this->content = ie->contentText().toLatin1();
+
+    open(ReadOnly | Unbuffered);
+
+    ie->close();
 
     // setHeader(QNetworkRequest::ContentTypeHeader, QVariant("text/html; charset=UTF-8"));
     setHeader(QNetworkRequest::ContentLengthHeader, QVariant(this->content.size()));
 
+    setFinished(true);
     emit readyRead();
     emit finished();
-
-    ie->close();
 }
