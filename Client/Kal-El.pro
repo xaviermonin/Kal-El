@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
 SUBDIRS += KENetwork \
-           Tests
+           tests
 
-Test.depends = KENetwork
+test.depends = KENetwork

@@ -69,4 +69,6 @@ void KEInternetExplorerTest::post()
     QVERIFY(contentText.contains("kepropertyname"));
 }
 
+QTEST_MAIN(KEInternetExplorerTest)
+
 #include "tst_keinternetexplorertest.moc"
