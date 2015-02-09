@@ -80,7 +80,7 @@ qint64 KENetworkReply::readData(char *data, qint64 maxSize)
 
 void KENetworkReply::setContent()
 {
-    this->content = ie->contentHtml().toLatin1();
+    this->content = ie->content();
 
     open(ReadOnly | Unbuffered);
 

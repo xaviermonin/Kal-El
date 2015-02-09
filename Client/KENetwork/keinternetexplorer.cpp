@@ -1,9 +1,12 @@
 #include "keinternetexplorer.h"
 #include <ActiveQt/QAxObject>
 #include <QNetworkRequest>
-#include <Windows.h>
 #include <QDebug>
-#include <QHttpMultiPart>
+#include <initguid.h>
+#include <QUuid>
+
+#include <Windows.h>
+#include <ocidl.h>
 
 KEInternetExplorer::KEInternetExplorer(bool visible = false, QObject *parent)
     : QObject(parent)
@@ -52,14 +55,60 @@ bool KEInternetExplorer::visible() const
     return ie->property("Visible").toBool();
 }
 
-QString KEInternetExplorer::contentHtml()
+QByteArray KEInternetExplorer::content()
 {
-    return getDocumentElementProperty("outerHTML");
-}
+    QAxObject* document = ie->querySubObject("Document");
 
-QString KEInternetExplorer::contentText()
-{
-    return getDocumentElementProperty("outerText");
+    IPersistStreamInit* pPersistStreamInit = NULL;
+
+    document->queryInterface(QUuid(__uuidof(IPersistStreamInit)),
+                             (void**)&pPersistStreamInit);
+
+    if (!pPersistStreamInit)
+        return QByteArray();
+
+    // Fill stream
+
+    IStream* pStream = 0;
+
+    if (FAILED(CreateStreamOnHGlobal(0, TRUE, &pStream)))
+        return QByteArray();
+
+    if (FAILED(pPersistStreamInit->Save(pStream, FALSE)))
+    {
+        pPersistStreamInit->Release();
+        return QByteArray();
+    }
+
+    // Read stream
+
+    LARGE_INTEGER liBeggining = {0};
+
+    STATSTG statstg = {0};
+
+    pStream->Seek(liBeggining, 0, NULL);
+    pStream->Stat(&statstg, STATFLAG_NONAME);
+
+    quint64 sizeRequired = statstg.cbSize.QuadPart;
+
+    char* pSource = new char[sizeRequired];
+
+    if (FAILED(pStream->Read(pSource, sizeRequired, NULL)))
+    {
+        delete pSource;
+        pStream->Release();
+        pPersistStreamInit->Release();
+        return QByteArray();
+    }
+
+    pStream->Release();
+    pPersistStreamInit->Release();
+
+    QByteArray data(pSource, sizeRequired);
+
+    delete pSource;
+
+    return data;
 }
 
 bool KEInternetExplorer::silence() const

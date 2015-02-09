@@ -44,8 +44,7 @@ public:
     void setVisible(bool);
     bool visible() const;
 
-    QString contentHtml();
-    QString contentText();
+    QByteArray content();
 
     void navigate(const QString& url, const QString &headers = "", const QByteArray &postData = "", const QString &targetFrameName = "", int flags = 0);
 

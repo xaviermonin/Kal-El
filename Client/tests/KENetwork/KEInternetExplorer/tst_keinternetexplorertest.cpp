@@ -39,16 +39,14 @@ void KEInternetExplorerTest::get()
 
     QSignalSpy spy(&ie, SIGNAL(navigateComplete(QString)));
 
-    ie.navigate("http://www.perdu.com/");
+    ie.navigate("http://www.perdu.com");
 
     while (spy.count() == 0)
         QTest::qWait(100);
 
-    QString contentHtml = ie.contentHtml();
-    QString contentText = ie.contentText();
+    QByteArray content = ie.content();
 
-    QVERIFY(contentHtml.contains("<title>Vous Etes Perdu ?</title>"));
-    QVERIFY(contentText.contains("Perdu sur l'Internet ?\r\n"));
+    QVERIFY(content.contains("<title>Vous Etes Perdu ?</title>"));
 }
 
 void KEInternetExplorerTest::post()
@@ -64,7 +62,7 @@ void KEInternetExplorerTest::post()
     while (spy.count() == 0)
         QTest::qWait(100);
 
-    QString contentText = ie.contentText();
+    QString contentText = ie.content();
 
     QVERIFY(contentText.contains("kepropertyname"));
 }
