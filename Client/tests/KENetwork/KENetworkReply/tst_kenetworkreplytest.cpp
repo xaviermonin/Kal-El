@@ -48,7 +48,7 @@ void KENetworkReplyTest::get()
 
     QString content = networkReply.readAll();
 
-    QVERIFY(content.contains("Perdu sur l'Internet ?\r\n"));
+    QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
 }
 
 void KENetworkReplyTest::post()
