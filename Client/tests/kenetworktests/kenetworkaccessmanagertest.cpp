@@ -1,28 +1,4 @@
-#include <QString>
-#include <QtTest>
-#include <QCoreApplication>
-#include <QSignalSpy>
-#include <QBuffer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include "kenetworkaccessmanager.h"
-
-class KENetworkAccessManagerTest : public QObject
-{
-    Q_OBJECT
-
-public:
-    KENetworkAccessManagerTest();
-
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-    void get();
-    void post();
-
-private:
-
-};
+#include "kenetworkaccessmanagertest.h"
 
 KENetworkAccessManagerTest::KENetworkAccessManagerTest()
 {
@@ -79,7 +55,3 @@ void KENetworkAccessManagerTest::post()
     QString content = reply->readAll();
     QVERIFY(content.contains("kepropertyname"));
 }
-
-QTEST_MAIN(KENetworkAccessManagerTest)
-
-#include "tst_kenetworkaccessmanagertest.moc"
