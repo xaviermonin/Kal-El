@@ -16,8 +16,12 @@ public:
 private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
+
     void get();
+    void get_data();
+
     void post();
+    void post_data();
 
 private:
     KEInternetExplorer* ie;

@@ -14,19 +14,45 @@ void KEInternetExplorerTest::cleanupTestCase()
     delete ie;
 }
 
+void KEInternetExplorerTest::get_data()
+{
+    QTest::addColumn<QString>("url");
+    QTest::addColumn<QByteArray>("result");
+
+    QTest::newRow("http html") << "http://www.perdu.com"
+                               << QByteArray("<title>Vous Etes Perdu ?</title>");
+
+    QTest::newRow("http old html") << "http://www.kli.org/tlh/phrases.html"
+                               << QByteArray("<TT class=tlh>tlhIngan maH!</TT>");
+
+    QTest::newRow("https raw") << "https://raw.githubusercontent.com/xaviermonin/Kal-El/master/LICENSE"
+                               << QByteArray("Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>");
+
+    QTest::newRow("https redirect raw") << "https://raw.githubusercontent.com/xaviermonin/Kal-El/master/LICENSE"
+                               << QByteArray("Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>");
+}
+
 void KEInternetExplorerTest::get()
 {
+    QFETCH(QString, url);
+    QFETCH(QByteArray, result);
+
     QSignalSpy spy(ie, SIGNAL(navigateComplete(QString)));
     QVERIFY(spy.isValid());
 
-    ie->navigate("http://www.perdu.com");
+    ie->navigate(url);
 
     while (spy.count() == 0)
         QTest::qWait(100);
 
     QByteArray content = ie->content();
 
-    QVERIFY(content.contains("<title>Vous Etes Perdu ?</title>"));
+    QVERIFY(content.contains(result));
+}
+
+void KEInternetExplorerTest::post_data()
+{
+
 }
 
 void KEInternetExplorerTest::post()
