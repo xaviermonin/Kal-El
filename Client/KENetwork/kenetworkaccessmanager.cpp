@@ -26,7 +26,11 @@ QNetworkReply* KENetworkAccessManager::createRequest(QNetworkAccessManager::Oper
                                                     const QNetworkRequest &request,
                                                     QIODevice *outgoingData)
 {
-    if (request.url().scheme() != "http")
+    if (mode == Standard)
+        return QNetworkAccessManager::createRequest(operation, request, outgoingData);
+
+    if (request.url().scheme() != "http" &&
+        request.url().scheme() != "https")
         return QNetworkAccessManager::createRequest(operation, request, outgoingData);
 
     switch (operation)

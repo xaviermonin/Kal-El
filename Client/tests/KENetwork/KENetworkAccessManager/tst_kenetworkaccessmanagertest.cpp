@@ -39,7 +39,7 @@ void KENetworkAccessManagerTest::cleanupTestCase()
 
 void KENetworkAccessManagerTest::get()
 {
-    KENetworkAccessManager manager;
+    KENetworkAccessManager manager(KENetworkAccessManager::InternetExplorer);
     QNetworkRequest request(QUrl("http://www.perdu.com"));
 
     QNetworkReply* reply = manager.get(request);
@@ -51,7 +51,7 @@ void KENetworkAccessManagerTest::get()
         QTest::qWait(100);
 
     QString content = reply->readAll();
-    QVERIFY(content.contains("Perdu sur l'Internet ?\r\n"));
+    QVERIFY(content.contains("<h1>Perdu sur l'Internet ?</h1>"));
 
     delete reply;
 }
@@ -67,7 +67,7 @@ void KENetworkAccessManagerTest::post()
     QBuffer buffer;
     buffer.setBuffer(&header);
 
-    QNetworkAccessManager manager;
+    KENetworkAccessManager manager(KENetworkAccessManager::InternetExplorer);
     QNetworkReply* reply = manager.post(request, &buffer);
 
     QSignalSpy spy(reply, SIGNAL(finished()));
